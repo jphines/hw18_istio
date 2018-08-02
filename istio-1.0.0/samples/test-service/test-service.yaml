@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: test-service
+  labels:
+    app: test-service
+spec:
+  ports:
+  - port: 8080
+    name: http
+  selector:
+    app: test-service
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: test-service-200
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        app: test-service
+        version: '200'
+    spec:
+      containers:
+      - name: test-service
+        image: docker.io/jphines/test-service:200
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+---
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: test-service-503
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: test-service
+        version: '503'
+    spec:
+      containers:
+      - name: test-service
+        image: docker.io/jphines/test-service:503
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
